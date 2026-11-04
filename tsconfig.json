@@ -17,4 +17,4 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
   ]
-}
+}npx eas whoami
