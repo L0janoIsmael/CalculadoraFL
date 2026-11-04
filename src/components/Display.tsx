@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import CustomText from './CustomText';
 
 interface DisplayProps {
   formula: string;
@@ -9,12 +10,12 @@ interface DisplayProps {
 const Display: React.FC<DisplayProps> = ({ formula, resultado }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.formulaText} numberOfLines={1}>
+      <CustomText style={styles.formulaText} numberOfLines={1}>
         {formula}
-      </Text>
-      <Text style={styles.resultText} numberOfLines={1}>
+      </CustomText>
+      <CustomText style={styles.resultText} numberOfLines={1}>
         {resultado}
-      </Text>
+      </CustomText>
     </View>
   );
 };

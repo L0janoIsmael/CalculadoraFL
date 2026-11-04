@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import CustomText from './CustomText';
 
 interface BotonProps {
   label: string;
@@ -12,7 +13,7 @@ interface BotonProps {
 
 const Boton: React.FC<BotonProps> = ({
   label,
-  bgColor = '#2A2D2A', // Color oscuro por defecto
+  bgColor = '#282B28',
   textColor = '#FFFFFF',
   isDoubleHeight = false,
   isDoubleWidth = false,
@@ -29,7 +30,9 @@ const Boton: React.FC<BotonProps> = ({
         isDoubleHeight && styles.doubleHeight,
       ]}
     >
-      <Text style={[styles.texto, { color: textColor }]}>{label}</Text>
+      <CustomText style={[styles.texto, { color: textColor }]}>
+        {label}
+      </CustomText>
     </TouchableOpacity>
   );
 };
@@ -46,10 +49,10 @@ const styles = StyleSheet.create({
     margin: 6,
   },
   doubleWidth: {
-    width: 142, // Ocupa 2 columnas + el margen
+    width: 142,
   },
   doubleHeight: {
-    height: 142, // Ocupa 2 filas + el margen
+    height: 142,
   },
   texto: {
     fontSize: 22,
