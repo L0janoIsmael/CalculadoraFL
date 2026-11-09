@@ -8,15 +8,10 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Visor de la calculadora con alineación inversa estricta contra saltos */}
+      {/* Visor más amplio y espacioso tras quitar la memoria */}
       <View style={styles.displayContainer}>
-        
         <View style={styles.rowWrapper}>
-          <Text 
-            style={styles.expressionText} 
-            numberOfLines={1} 
-            ellipsizeMode="head"
-          >
+          <Text style={styles.expressionText} numberOfLines={1} ellipsizeMode="head">
             {expression}
           </Text>
         </View>
@@ -26,12 +21,11 @@ export default function HomeScreen() {
             style={styles.displayText} 
             numberOfLines={1}
             adjustsFontSizeToFit
-            minimumFontScale={0.5}
+            minimumFontScale={0.4}
           >
             {displayValue}
           </Text>
         </View>
-
       </View>
 
       <Regilla onPressBoton={handlePress} />
@@ -44,30 +38,30 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
     justifyContent: 'flex-end',
-    paddingBottom: 20,
+    paddingBottom: 25,
   },
   displayContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 10,
-    minHeight: 140,
+    paddingVertical: 20,
+    minHeight: 180, // Pantalla notablemente más alta y cómoda
     justifyContent: 'flex-end',
     width: '100%',
   },
   rowWrapper: {
     width: '100%',
-    flexDirection: 'row-reverse', // Fuerza el crecimiento del texto de derecha a izquierda
+    flexDirection: 'row-reverse',
     alignItems: 'center',
     overflow: 'hidden',
-    marginVertical: 2,
+    marginVertical: 4,
   },
   expressionText: {
     color: '#8E8E93',
-    fontSize: 20,
+    fontSize: 22,
     textAlign: 'right',
   },
   displayText: {
     color: '#fff',
-    fontSize: 60,
+    fontSize: 68, // Tamaño grande y limpio
     fontWeight: '300',
     textAlign: 'right',
   },

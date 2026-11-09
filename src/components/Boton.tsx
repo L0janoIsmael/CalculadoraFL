@@ -1,38 +1,33 @@
 import React from 'react';
-import { Text, StyleSheet, Pressable, Vibration } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 interface BotonProps {
   label: string;
+  onPress: () => void;
   bgColor?: string;
   textColor?: string;
   isDoubleWidth?: boolean;
-  onPress: () => void;
 }
 
 const Boton: React.FC<BotonProps> = ({
   label,
+  onPress,
   bgColor = '#282B28',
   textColor = '#FFF',
   isDoubleWidth = false,
-  onPress,
 }) => {
-  const handlePress = () => {
-    // Vibración sutil de 40ms al tocar el botón
-    Vibration.vibrate(40);
-    onPress();
-  };
-
   return (
-    <Pressable
-      onPress={handlePress}
-      style={({ pressed }) => [
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
         styles.button,
-        { backgroundColor: bgColor, opacity: pressed ? 0.7 : 1 },
+        { backgroundColor: bgColor },
         isDoubleWidth && styles.doubleWidth,
       ]}
+      activeOpacity={0.7}
     >
       <Text style={[styles.text, { color: textColor }]}>{label}</Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 
@@ -41,17 +36,19 @@ export default Boton;
 const styles = StyleSheet.create({
   button: {
     height: 70,
-    flex: 1,
-    marginHorizontal: 5,
+    width: '22%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 20,
+    borderRadius: 35,
+    marginVertical: 6,
   },
   doubleWidth: {
-    flex: 2.1,
+    width: '48%',
+    alignItems: 'flex-start',
+    paddingLeft: 30,
   },
   text: {
     fontSize: 26,
-    fontWeight: '600',
+    fontWeight: '500',
   },
 });
