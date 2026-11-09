@@ -14,8 +14,14 @@ export const useCalculator = () => {
       return;
     }
 
-    // 2. Retroceso (⌫)
+    // 2. Borrado Inteligente (⌫)
     if (label === '⌫') {
+      if (displayValue.endsWith('sin(') || displayValue.endsWith('cos(')) {
+        setDisplayValue(displayValue.slice(0, -4));
+        if (displayValue.length <= 4) setDisplayValue('0');
+        return;
+      }
+
       if (displayValue.length > 1) {
         setDisplayValue(displayValue.slice(0, -1));
       } else {
@@ -24,30 +30,34 @@ export const useCalculator = () => {
       return;
     }
 
-    // 3. Funciones Trigonométricas (sin, cos) -> Envuelven el valor actual limpiamente
+    // 3. Funciones Trigonométricas (sin, cos)
     if (label === 'sin' || label === 'cos') {
-      const cleanExpr = expression.includes('=') ? '' : expression;
-      setExpression(cleanExpr);
-      setDisplayValue(`${label}(${displayValue})`);
-      setWaitingForOperand(false);
+      const block = `${label}(`;
+      if (displayValue === '0' || waitingForOperand) {
+        setDisplayValue(block);
+        setWaitingForOperand(false);
+      } else {
+        setDisplayValue(displayValue + block);
+      }
       return;
     }
 
     // 4. Porcentaje (%)
     if (label === '%') {
       const current = parseFloat(displayValue);
-      setDisplayValue(String(current / 100));
+      if (!isNaN(current)) {
+        setDisplayValue(String(current / 100));
+      }
       return;
     }
 
     // 5. Paréntesis ( )
     if (label === '( )') {
-      const fullString = expression + displayValue;
-      const openCount = (fullString.match(/\(/g) || []).length;
-      const closeCount = (fullString.match(/\)/g) || []).length;
+      const openCount = (displayValue.match(/\(/g) || []).length;
+      const closeCount = (displayValue.match(/\)/g) || []).length;
       const parenthesisChar = openCount > closeCount ? ')' : '(';
 
-      if (waitingForOperand || displayValue === '0') {
+      if (displayValue === '0' || waitingForOperand) {
         setDisplayValue(parenthesisChar);
         setWaitingForOperand(false);
       } else {
@@ -63,7 +73,9 @@ export const useCalculator = () => {
         setWaitingForOperand(false);
         return;
       }
-      if (!displayValue.includes('.')) {
+      const parts = displayValue.split(/[\+\-\×\÷\(\)]/);
+      const currentNumber = parts[parts.length - 1];
+      if (!currentNumber.includes('.')) {
         setDisplayValue(displayValue + '.');
       }
       return;
@@ -80,20 +92,24 @@ export const useCalculator = () => {
       return;
     }
 
-    // 8. Operadores (+, -, ×, ÷)
+    // 8. Operadores (+, -, ×, ÷) -> Permite operadores múltiples y fluidos
     if (['+', '-', '×', '÷'].includes(label)) {
       if (expression.includes('=')) {
         setExpression(`${displayValue} ${label} `);
       } else if (waitingForOperand) {
+        // Si presionas varios operadores seguidos, reemplaza el operador anterior por el nuevo
         const trimmed = expression.trim();
         if (['+', '-', '×', '÷'].includes(trimmed.slice(-1))) {
           setExpression(trimmed.slice(0, -1) + ` ${label} `);
+        } else {
+          setExpression(expression + ` ${label} `);
         }
       } else {
         setExpression(expression + displayValue + ` ${label} `);
       }
 
-      setWaitingForOperand(true);
+      setDisplayValue('0');
+      setWaitingForOperand(false);
       return;
     }
 
@@ -104,7 +120,6 @@ export const useCalculator = () => {
       const fullExpressionString = expression + displayValue;
       
       try {
-        // Traducción robusta para JavaScript (convierte grados a radianes para que Math.sin/cos funcione bien)
         const sanitizedExpr = fullExpressionString
           .replace(/×/g, '*')
           .replace(/÷/g, '/')
